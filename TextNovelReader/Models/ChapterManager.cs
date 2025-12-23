@@ -28,35 +28,41 @@ internal partial class ChapterManager(string filePath)
 
         if (string.IsNullOrEmpty(fileContent)) goto END;
 
-        Chapter currentChapter = new()
-        {
-            Title = GetFileName(),
-        };
+        Chapter currentChapter = new(GetFileName(), string.Empty, 0); 
         result.Add(currentChapter); 
 
-        string? line = null; 
+        string? line = null;
+        StringBuilder textBuilder = new(); 
         while (true)
         {
             line = reader.ReadLine();
             if (line == null) break;
+            if (string.IsNullOrEmpty(line)) continue;
 
             int upper = Math.Min(12, line.Length); 
             if(IsTitle(line.AsSpan()[..upper]))
             {
-                // TODO
+                currentChapter.Text = textBuilder.ToString();
+                textBuilder = textBuilder.Clear();
+                currentChapter = new(line, string.Empty, result.Count);
+                result.Add(currentChapter);
             }
             else
             {
-
+                textBuilder.AppendLine(line); 
             }
-        
         }
-
+        currentChapter.Text = textBuilder.ToString(); 
     END:
         return result; 
     }
 
-    private bool IsTitle(ReadOnlySpan<char> input)
+    public Task<List<Chapter>> GetChaptersAsync()
+    {
+        return new Task<List<Chapter>>(GetChapters); 
+    }
+
+    private static bool IsTitle(ReadOnlySpan<char> input)
     {
         var regex = TitleRegex();
         var result = regex.Count(input);
