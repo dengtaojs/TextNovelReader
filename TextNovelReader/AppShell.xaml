@@ -1,14 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="TextNovelReader.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TextNovelReader"
+    xmlns:pages="clr-namespace:TextNovelReader.Pages"
     Title="TextNovelReader">
 
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior
+            IsEnabled="True"
+            Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
+
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate pages:MainPage}"
         Route="MainPage" />
 
 </Shell>
