@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using TextNovelReader.Pages;
+﻿using TextNovelReader.Pages;
 
 namespace TextNovelReader;
 
@@ -8,18 +7,7 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
-        BackCommand = new Command(OnBackCommandInvoked); 
-       
+        Routing.RegisterRoute("book_contents", typeof(BookContentsPage));
+        Routing.RegisterRoute("chapter_detail", typeof(ChapterDetailPage)); 
     }
-
-    public ICommand BackCommand { get; }
-
-    private async void OnBackCommandInvoked()
-    {
-        if(Shell.Current.Navigation.NavigationStack.Count > 1)
-        {
-            await Current.Navigation.PopAsync(true);
-        }
-    }
-
 }

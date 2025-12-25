@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
+using TextNovelReader.Models;
+using TextNovelReader.Pages;
 
 namespace TextNovelReader;
 
@@ -11,10 +14,10 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = new Window(new AppShell())
+        return new Window()
         {
-            Title = "Text Novel Reader"
+            Title = "Text Novel Reader",
+            Page = new AppShell()
         };
-        return window; 
     }
 }

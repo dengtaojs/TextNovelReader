@@ -23,9 +23,13 @@ internal class TextDecoder (string filePath)
         return result; 
     }
 
-    public Task<string> GetFileContentAsync()
+    public async Task<string> GetFileContentAsync()
     {
-        return new Task<string>(GetFileContent); 
+        var result = await Task.Run(() =>
+        {
+            return this.GetFileContent();
+        });
+        return result;
     }
 }
 

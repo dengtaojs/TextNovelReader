@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TextNovelReader.Models"
+             x:Class="TextNovelReader.Pages.BookContentsPage">
+    <Shell.NavBarIsVisible>True</Shell.NavBarIsVisible>
+
+    <CollectionView
+        Grid.Row="1"
+        x:Name="ChaptersCollectionView"
+        SelectionMode="Single"
+        SelectionChanged="ChaptersCollectionView_SelectionChanged">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:Chapter">
+                <Label 
+                    Text="{Binding Title}"
+                    FontSize="Medium"
+                    Padding="10"
+                    VerticalTextAlignment="Center"/>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TextNovelReader.Models"
+             x:Class="TextNovelReader.Pages.HomePage">
+    
+    <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
+    
+    <Grid RowSpacing="10" 
+          RowDefinitions="Auto, *"
+          Margin="0 10">
+
+        <VerticalStackLayout Spacing="10">
+            <Label 
+                Text="文件操作" 
+                FontSize="Title"/>
+            <HorizontalStackLayout Spacing="10">
+                <Button
+                    Text="打开"
+                    Clicked="OpenFileButton_Clicked"/>
+            </HorizontalStackLayout>
+
+            <Label Text="阅读记录" FontSize="Title" />
+        </VerticalStackLayout>
+
+        <CollectionView x:Name="HistoryCollection" 
+                        Grid.Row="1"
+                        SelectionMode="Single">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Book">
+                    <Grid 
+                        ColumnDefinitions="Auto, *"
+                        Padding="10">
+                        <Label
+                            Text="{Binding CollectionIndex, StringFormat='{0}. '}"
+                            FontSize="Small"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            VerticalTextAlignment="Center"/>
+                        
+                        <Label
+                            Text="{Binding Name}"
+                            FontSize="Subtitle"
+                            Grid.Column="1"
+                            VerticalTextAlignment="Center"
+                            Grid.RowSpan="2" />
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
