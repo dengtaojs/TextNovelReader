@@ -2,9 +2,6 @@
 
 namespace TextNovelReader.TextTools;
 
-/// <summary>
-/// 传入文件路径，得到解码后的文件内容。
-/// </summary>
 internal class TextDecoder (string filePath)
 {
     public string GetFileContent()
@@ -32,4 +29,3 @@ internal class TextDecoder (string filePath)
         return result;
     }
 }
-
