@@ -12,11 +12,30 @@
         SelectionChanged="ChaptersCollectionView_SelectionChanged">
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="models:Chapter">
-                <Label 
-                    Text="{Binding Title}"
-                    FontSize="Medium"
-                    Padding="10"
-                    VerticalTextAlignment="Center"/>
+                <Border Padding="10"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="0">
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup Name="CommonStates">
+                            <VisualState Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor"
+                                            Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor"
+                                            Value="#3399ff" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    <Label 
+                        Text="{Binding Title}"
+                        FontSize="Medium"
+                        VerticalTextAlignment="Center"/>
+                </Border>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

@@ -5,7 +5,7 @@ using TextNovelReader.Service;
 namespace TextNovelReader.Pages;
 
 [QueryProperty("CollectionIndex", "index")]
-public partial class BookContentsPage : ContentPage
+public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
     private readonly ReaderService _service;
 	public Book? _currentBook = null;
@@ -57,5 +57,10 @@ public partial class BookContentsPage : ContentPage
         {
             await Shell.Current.GoToAsync($"chapter_detail?index={chapter.Index}");
         }
+    }
+
+    async void IBackButtonHandler.OnBackButtonPressed()
+    {
+        await Shell.Current.GoToAsync(".."); 
     }
 }

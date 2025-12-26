@@ -25,27 +25,30 @@
 
         <CollectionView x:Name="HistoryCollection" 
                         Grid.Row="1"
-                        SelectionMode="Single">
+                        SelectionMode="Single"
+                        SelectionChanged="HistoryCollection_SelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Book">
-                    <Grid 
-                        ColumnDefinitions="Auto, *"
-                        Padding="10">
+                    <SwipeView Padding="10" 
+                               HeightRequest="70"
+                               SwipeStarted="SwipeView_SwipeStarted"
+                               SwipeEnded="SwipeView_SwipeEnded">
+                        <SwipeView.RightItems>
+                            <SwipeItemView>
+                                <Button
+                                    Text="删除"
+                                    Clicked="DeleteBook"
+                                    WidthRequest="80" 
+                                    BackgroundColor="Red"/>
+                            </SwipeItemView>
+                        </SwipeView.RightItems>
                         <Label
-                            Text="{Binding CollectionIndex, StringFormat='{0}. '}"
-                            FontSize="Small"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            VerticalTextAlignment="Center"/>
-                        
-                        <Label
-                            Text="{Binding Name}"
-                            FontSize="Subtitle"
-                            Grid.Column="1"
-                            VerticalTextAlignment="Center"
-                            Grid.RowSpan="2" />
-
-                    </Grid>
+                               Text="{Binding CollectionTitle}"
+                               FontSize="Subtitle"
+                               Grid.Column="1"
+                               VerticalTextAlignment="Center"
+                               Grid.RowSpan="2" />
+                    </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

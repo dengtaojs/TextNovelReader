@@ -1,28 +1,50 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using TextNovelReader.TextTools;
 
 namespace TextNovelReader.Models;
 
-public partial class Book(string filePath)
+public partial class Book : BindableBase
 {
-    private readonly TextDecoder _decoder = new(filePath);
-    private string? _bookName;
+    private string? _name;
+    private int _collectionIndex = 0; 
 
+    [JsonIgnore]
     public string Name
-        => _bookName ??= GetBookName();
+        => _name ??= GetName();
 
-    public string FilePath
-        => filePath;
+    [JsonInclude]
+    public string FilePath { get; set; } = string.Empty;
 
+    [JsonInclude]
     public int ReadingChapterIndex { get; set; }
+
+    [JsonInclude]
     public int ReadingPosition { get; set; }
-    public int CollectionIndex { get; set; }
 
+    [JsonIgnore]
+    public string CollectionTitle
+        => $"{CollectionIndex}. {Name}"; 
 
-    private string GetBookName()
+    [JsonInclude]
+    public int CollectionIndex
     {
-        var fileInfo = new FileInfo(filePath);
+        get => _collectionIndex;
+        set
+        {
+            _collectionIndex = value;
+            RaisePropertyChanged(nameof(CollectionTitle)); 
+        }
+    }
+
+    private string GetName()
+    {
+        if (string.IsNullOrEmpty(FilePath)) return string.Empty; 
+
+        var fileInfo = new FileInfo(FilePath);
         var fileName = fileInfo.Name;
 
         if (fileName.EndsWith(".txt")) return fileName[..^4];
@@ -32,13 +54,17 @@ public partial class Book(string filePath)
     public List<Chapter> GetChapters()
     {
         List<Chapter> result = [];
+        if (File.Exists(FilePath) != true)
+            return result; 
 
-        var fileContent = _decoder.GetFileContent();
+        var decoder = new TextDecoder(FilePath); 
+        var fileContent = decoder.GetFileContent();
         using var reader = new StringReader(fileContent);
 
-        if (string.IsNullOrEmpty(fileContent)) goto END;
+        if (string.IsNullOrEmpty(fileContent))
+            return result; 
 
-        Chapter currentChapter = new(GetBookName(), string.Empty, 0);
+        Chapter currentChapter = new(Name, string.Empty, 0);
         result.Add(currentChapter);
 
         string? line = null;
@@ -63,7 +89,7 @@ public partial class Book(string filePath)
             }
         }
         currentChapter.Text = textBuilder.ToString();
-    END:
+
         return result;
     }
 

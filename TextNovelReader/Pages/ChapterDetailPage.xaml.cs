@@ -3,30 +3,35 @@
 namespace TextNovelReader.Pages;
 
 [QueryProperty("ChapterIndex", "index")]
-public partial class ChapterDetailPage : ContentPage
+public partial class ChapterDetailPage : ContentPage, IBackButtonHandler
 {
-	private readonly ReaderService _service; 
-	public ChapterDetailPage(ReaderService service)
-	{
-		_service = service; 
-		InitializeComponent();
-	}
+    private readonly ReaderService _service;
+    public ChapterDetailPage(ReaderService service)
+    {
+        _service = service;
+        InitializeComponent();
+    }
 
-	private int _chapterIndex = -1;
-	public int ChapterIndex
-	{
-		get => _chapterIndex;
-		set => SetChapterIndex(value); 
-	}
+    private int _chapterIndex = -1;
+    public int ChapterIndex
+    {
+        get => _chapterIndex;
+        set => SetChapterIndex(value);
+    }
 
-	private void SetChapterIndex(int value)
-	{
-		if (_chapterIndex == value)
-			return; 
+    private void SetChapterIndex(int value)
+    {
+        if (_chapterIndex == value)
+            return;
 
-		_chapterIndex = value;
-		var chapter = _service.CurrentBookChapters[value];
-		this.Title = chapter.Title;
-		this.ChapterTextLabel.Text = chapter.Text; 
-	}
+        _chapterIndex = value;
+        var chapter = _service.CurrentBookChapters[value];
+        this.Title = chapter.Title;
+        this.ChapterTextLabel.Text = chapter.Text;
+    }
+
+    async void IBackButtonHandler.OnBackButtonPressed()
+    {
+        await Shell.Current.GoToAsync(".."); 
+    }
 }

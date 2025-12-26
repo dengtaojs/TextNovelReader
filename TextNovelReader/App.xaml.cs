@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Collections.ObjectModel;
-using TextNovelReader.Models;
-using TextNovelReader.Pages;
+﻿using TextNovelReader.Service;
 
 namespace TextNovelReader;
 
 public partial class App : Application
 {
+    public ReaderService? Service { get; set; }
+
     public App()
     {
         InitializeComponent();
@@ -19,5 +18,16 @@ public partial class App : Application
             Title = "Text Novel Reader",
             Page = new AppShell()
         };
+    }
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+    }
+
+    protected override void OnSleep()
+    {
+        Service?.SaveBooks();
+        base.OnSleep();
     }
 }
