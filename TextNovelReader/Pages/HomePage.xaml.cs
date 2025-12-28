@@ -7,99 +7,90 @@ namespace TextNovelReader.Pages;
 
 public partial class HomePage : ContentPage
 {
-	private readonly ReaderService _service;
-	private bool _isSwipping = false; 
-	public ObservableCollection<Book> Books
-		=> _service.Books;
+    private readonly ReaderService _service;
+    public ObservableCollection<Book> Books => _service.Books;
 
-	public HomePage(ReaderService service)
-	{
-		InitializeComponent();
+    public HomePage(ReaderService service)
+    {
+        InitializeComponent();
 
-		_service = service;
-		(Application.Current as App)?.Service = _service;
-		_service.ReadBooks();
+        _service = service;
+        (Application.Current as App)?.Service = _service;
+        _service.ReadBooks();
 
-		HistoryCollection.ItemsSource = Books;
-	}
+        HistoryCollection.ItemsSource = Books;
+    }
     private async void OpenFileButton_Clicked(object sender, EventArgs e)
     {
-		var fileTypes = new Dictionary<DevicePlatform, IEnumerable<string>>()
-		{
-			[DevicePlatform.Android] = ["text/plain"]
-		};
+        var fileTypes = new Dictionary<DevicePlatform, IEnumerable<string>>()
+        {
+            [DevicePlatform.Android] = ["text/plain"]
+        };
         var option = new PickOptions
         {
             FileTypes = new FilePickerFileType(fileTypes)
         };
 
         var result = await FilePicker.Default.PickAsync(option);
-		if(result != null)
-		{
-			var book = new Book() { FilePath = result.FullPath };
-			this.AddBookToServiceCollection(book); 
-
-			await Shell.Current.GoToAsync($"book_contents?index={book.CollectionIndex}", false);
-		}
+        if (result != null)
+        {
+            var book = UpdateBooksAndRetriveCurrentBook(result.FullPath);
+            _service.NeedUpdateBooks = book != _service.CurrentBook; 
+            await Shell.Current.GoToAsync($"book_contents", false);
+        }
     }
 
-	private void AddBookToServiceCollection(Book book)
-	{
-		var list = _service.Books.ToList();
-		list.Reverse();
-
-		if (list.Find((x => x.FilePath == book.FilePath)) != null)
-			return;
-		list.Add(book); 
-
-		int i = -1; 
-		_service.Books.Clear();
-		foreach(var b in list)
-		{
-			b.CollectionIndex = ++i;
-			_service.Books.Add(b);
-		}
-	}
-
-    private async void HistoryCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private Book? UpdateBooksAndRetriveCurrentBook(string filePath)
     {
-		if (_isSwipping)
-		{
-			HistoryCollection.SelectedItem = null;
-			return; 
-		}
 
-		if (e.CurrentSelection.Count != 1)
-			return;
-		if (e.CurrentSelection[0] is Book book)
-		{
-			await Shell.Current.GoToAsync($"book_contents?index={book.CollectionIndex}", false);
-			HistoryCollection.SelectedItem = null;
-		}
+        var list = _service.Books.ToList();
+        var result = list.Find((x) => x.FilePath == filePath);
+        if (result == null)
+        {
+            result = new Book() { FilePath = filePath };
+            list.Add(result); 
+        }
+
+        list.Reverse();
+        _service.Books.Clear();
+        int i = 0;
+        foreach (var b in list)
+        {
+            b.CollectionIndex = ++i;
+            _service.Books.Add(b);
+        }
+
+        return result; 
     }
 
-    private void DeleteBook(object sender, EventArgs e)
+
+    private async void BokkItem_Tapped(object sender, TappedEventArgs e)
     {
-		if(sender is Button button)
-		{
-			if (button.BindingContext is Book book)
-			{
-				_service.Books.Remove(book);
-				for (int i = 0; i < _service.Books.Count; i++)
-				{
-					_service.Books[i].CollectionIndex = i;
-				}
-			}
-		}
+        if (sender is Label label && label.BindingContext is Book book)
+        {
+            _service.NeedUpdateBooks = _service.CurrentBook != book;
+            _service.CurrentBook = book;
+            HistoryCollection.SelectedItem = book;
+            await Shell.Current.GoToAsync($"book_contents", false);
+        }
     }
 
-    private void SwipeView_SwipeStarted(object sender, SwipeStartedEventArgs e)
+    private void DeleteBookItem_Tapped(object sender, TappedEventArgs e)
     {
-		_isSwipping = true;
+        if (sender is Label label && label.BindingContext is Book book)
+        {
+            _service.Books.Remove(book);
+            ResetBooksIndex(); 
+        }
     }
 
-    private void SwipeView_SwipeEnded(object sender, SwipeEndedEventArgs e)
+    private void ResetBooksIndex()
     {
-		_isSwipping = false;
+        int i = 1;
+        foreach (var book in _service.Books)
+        {
+            book.CollectionIndex = i;
+            ++i; 
+        }
     }
 }

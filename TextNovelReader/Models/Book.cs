@@ -62,7 +62,7 @@ public partial class Book : BindableBase
         if (string.IsNullOrEmpty(fileContent))
             return result; 
 
-        Chapter currentChapter = new(Name, string.Empty, 0);
+        Chapter currentChapter = new("前言", string.Empty);
         result.Add(currentChapter);
 
         string? line = null;
@@ -71,6 +71,7 @@ public partial class Book : BindableBase
         {
             line = reader.ReadLine();
             if (line == null) break;
+            line.Trim();
             if (string.IsNullOrEmpty(line)) continue;
 
             int upper = Math.Min(12, line.Length);
@@ -78,7 +79,7 @@ public partial class Book : BindableBase
             {
                 currentChapter.Text = textBuilder.ToString();
                 textBuilder = textBuilder.Clear();
-                currentChapter = new(line, string.Empty, result.Count);
+                currentChapter = new(line, string.Empty);
                 result.Add(currentChapter);
             }
             else

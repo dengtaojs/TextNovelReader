@@ -10,6 +10,11 @@ public class ReaderService
 
     public ObservableCollection<Chapter> CurrentBookChapters { get; } = []; 
 
+    public Book? CurrentBook { get; set; }
+    public Chapter? CurrentChapter { get; set; }
+
+    public bool NeedUpdateBooks { get; set; }
+
     public void SaveBooks()
     {
         var savedBooks = Preferences.Default.Get("books_count", 0);

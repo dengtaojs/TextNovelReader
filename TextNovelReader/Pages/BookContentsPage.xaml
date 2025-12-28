@@ -8,13 +8,12 @@
     <CollectionView
         Grid.Row="1"
         x:Name="ChaptersCollectionView"
-        SelectionMode="Single"
-        SelectionChanged="ChaptersCollectionView_SelectionChanged">
+        SelectionMode="Single">
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="models:Chapter">
                 <Border Padding="10"
-                        StrokeShape="RoundRectangle 8"
-                        StrokeThickness="0">
+                        StrokeThickness="0.2"
+                        Stroke="LightGray">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup Name="CommonStates">
                             <VisualState Name="Normal">
@@ -34,7 +33,11 @@
                     <Label 
                         Text="{Binding Title}"
                         FontSize="Medium"
-                        VerticalTextAlignment="Center"/>
+                        VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CotentsItem_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </Border>
             </DataTemplate>
         </CollectionView.ItemTemplate>

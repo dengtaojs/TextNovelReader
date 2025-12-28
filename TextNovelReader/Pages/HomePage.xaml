@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:TextNovelReader.Models"
              x:Class="TextNovelReader.Pages.HomePage">
-    
+
     <Shell.NavBarIsVisible>False</Shell.NavBarIsVisible>
-    
+
     <Grid RowSpacing="10" 
           RowDefinitions="Auto, *"
           Margin="0 10">
@@ -25,30 +25,53 @@
 
         <CollectionView x:Name="HistoryCollection" 
                         Grid.Row="1"
-                        SelectionMode="Single"
-                        SelectionChanged="HistoryCollection_SelectionChanged">
+                        SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Book">
-                    <SwipeView Padding="10" 
-                               HeightRequest="70"
-                               SwipeStarted="SwipeView_SwipeStarted"
-                               SwipeEnded="SwipeView_SwipeEnded">
-                        <SwipeView.RightItems>
-                            <SwipeItemView>
-                                <Button
-                                    Text="删除"
-                                    Clicked="DeleteBook"
-                                    WidthRequest="80" 
-                                    BackgroundColor="Red"/>
-                            </SwipeItemView>
-                        </SwipeView.RightItems>
-                        <Label
-                               Text="{Binding CollectionTitle}"
-                               FontSize="Subtitle"
-                               Grid.Column="1"
-                               VerticalTextAlignment="Center"
-                               Grid.RowSpan="2" />
-                    </SwipeView>
+                    <Border
+                        Stroke="LightGray"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 8">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="#3399ff" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <SwipeView Padding="1" HeightRequest="50">
+                            <SwipeView.RightItems>
+                                <SwipeItemView>
+                                    <Label
+                                        Text="删除"
+                                        WidthRequest="80" 
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        FontSize="Subtitle"
+                                        BackgroundColor="Red">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="DeleteBookItem_Tapped" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </SwipeItemView>
+                            </SwipeView.RightItems>
+                            <Label
+                                Text="{Binding CollectionTitle}"
+                                FontSize="Subtitle"
+                                VerticalTextAlignment="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BokkItem_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </SwipeView>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

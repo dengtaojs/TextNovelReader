@@ -4,63 +4,63 @@ using TextNovelReader.Service;
 
 namespace TextNovelReader.Pages;
 
-[QueryProperty("CollectionIndex", "index")]
 public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
     private readonly ReaderService _service;
-	public Book? _currentBook = null;
 
-	private int _collectionIndex = -1;
-	public int CollectionIndex
-	{
-		get => _collectionIndex;
-		set => OnCollectionIndexChanged(value); 
-	}
-
-	public BookContentsPage(ReaderService service)
-	{
-		InitializeComponent();
+    public BookContentsPage(ReaderService service)
+    {
+        InitializeComponent();
         _service = service;
+
         this.ChaptersCollectionView.ItemsSource = _service.CurrentBookChapters;
+        this.Title = _service.CurrentBook?.Name ?? "目录";
+        LoadChaptersAsync(); 
     }
 
-    // TODO 
-    // 避免多次调用这个函数
-	public async void OnCollectionIndexChanged(int value)
-	{
-        if (_collectionIndex == value)
-            return; 
+    private async void LoadChaptersAsync()
+    {
+        if (_service.CurrentBook == null)
+            return;
 
-        _collectionIndex = value;
-        _currentBook = _service.Books[_collectionIndex]; 
-
-        if (_currentBook != null)
+        if (_service.NeedUpdateBooks)
         {
-            this.Title = _currentBook.Name;
-            var chapters = await _currentBook.GetChaptersAsync();
-            _service.CurrentBookChapters.Clear(); 
-
+            _service.CurrentBookChapters.Clear();
+            var chapters = await _service.CurrentBook.GetChaptersAsync();
             foreach (var chapter in chapters)
             {
                 _service.CurrentBookChapters.Add(chapter);
             }
-          
         }
-    }
 
-    private async void ChaptersCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection.Count == 0)
-            return; 
+        _service.CurrentChapter = _service.CurrentBookChapters[_service.CurrentBook.ReadingChapterIndex];
+        this.ChaptersCollectionView.SelectedItem = _service.CurrentChapter;
 
-        if(e.CurrentSelection[0] is Chapter chapter)
-        {
-            await Shell.Current.GoToAsync($"chapter_detail?index={chapter.Index}");
-        }
+        await Task.Delay(100);
+        this.ChaptersCollectionView.ScrollTo(_service.CurrentBook.ReadingChapterIndex, position: ScrollToPosition.Center);
     }
 
     async void IBackButtonHandler.OnBackButtonPressed()
     {
-        await Shell.Current.GoToAsync(".."); 
+        await Shell.Current.GoToAsync("..", false);
+    }
+
+    private async void CotentsItem_Tapped(object sender, TappedEventArgs e)
+    {
+        if (sender is Label button)
+        {
+            if (button.BindingContext is Chapter chapter)
+            {
+                _service.CurrentChapter = chapter;
+                this.ChaptersCollectionView.SelectedItem = chapter;
+
+                if (_service.CurrentBook != null)
+                {
+                    var index = _service.CurrentBookChapters.IndexOf(chapter);
+                    _service.CurrentBook.ReadingChapterIndex = index;
+                }
+                await Shell.Current.GoToAsync($"chapter_detail", true);
+            }
+        }
     }
 }
