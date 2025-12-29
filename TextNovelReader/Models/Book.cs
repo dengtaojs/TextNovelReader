@@ -22,11 +22,6 @@ public partial class Book : BindableBase
     [JsonInclude]
     public int ReadingPosition { get; set; }
 
-    public int FilePathHash()
-    {
-        return FilePath.GetHashCode(); 
-    }
-
     private string GetName()
     {
         if (string.IsNullOrEmpty(FilePath)) return string.Empty;

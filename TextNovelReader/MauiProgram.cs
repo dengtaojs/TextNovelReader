@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TextNovelReader.ViewModel;
 
 namespace TextNovelReader;
 
@@ -13,7 +14,8 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
+            })
+            .Services.AddSingleton<ReaderViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

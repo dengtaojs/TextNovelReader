@@ -1,10 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TextNovelReader.Models"
              x:Class="TextNovelReader.Views.HomePage"
              Title="阅读记录">
 
     <Grid>
-        <CollectionView/>
+        <CollectionView
+            x:Name="BooksCollectionView"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Book">
+                    <Grid HeightRequest="40" Padding="0 10">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Grid.GestureRecognizers>
+
+                        <Label
+                            Text="{Binding Name}"
+                            VerticalTextAlignment="Center"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="NoWrap"
+                            FontSize="Subtitle">
+                        </Label>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ImageButton
+            Source="open.png"
+            WidthRequest="56"
+            HeightRequest="56"
+            CornerRadius="28"
+            Padding="15"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="20"
+            Clicked="OpenFileButton_Clicked"
+            Background="LightPink">
+        </ImageButton>
     </Grid>
 </ContentPage>

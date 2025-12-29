@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TextNovelReader.Models"
+             x:Class="TextNovelReader.Views.BookContentsPage">
+    <Grid>
+        <CollectionView
+            x:Name="ChaptersCollectionView"
+            SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Chapter">
+                    <Grid HeightRequest="40"
+                          Padding="0 10">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </Grid.GestureRecognizers>
+                        <Label
+                            Text="{Binding Title}"
+                            FontSize="Subtitle" 
+                            VerticalTextAlignment="Center"
+                            LineBreakMode="NoWrap" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

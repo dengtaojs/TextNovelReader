@@ -1,19 +1,16 @@
-﻿using TextNovelReader.ViewModels;
+﻿using TextNovelReader.ViewModel;
 
 namespace TextNovelReader.Views;
 
 public partial class SettingsPage : ContentPage
 {
-	private readonly SettingsPageViewModel _viewModel;
+	private readonly ReaderViewModel _viewModel;
 
-	public SettingsPage(SettingsPageViewModel viewModel)
+	public SettingsPage(ReaderViewModel viewModel)
 	{
 		_viewModel = viewModel;
 		InitializeComponent();
 	}
 
-	public SettingsPageViewModel ViewModel
-	{
-		get => _viewModel;
-	}
+	public ReaderViewModel ViewModel => _viewModel;
 }
