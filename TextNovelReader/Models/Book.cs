@@ -8,7 +8,6 @@ namespace TextNovelReader.Models;
 public partial class Book : BindableBase
 {
     private string? _name;
-    private int _collectionIndex = 0; 
 
     [JsonIgnore]
     public string Name
@@ -18,49 +17,36 @@ public partial class Book : BindableBase
     public string FilePath { get; set; } = string.Empty;
 
     [JsonInclude]
-    public int ReadingChapterIndex { get; set; }
+    public int ChapterIndex { get; set; }
 
     [JsonInclude]
     public int ReadingPosition { get; set; }
 
-    [JsonIgnore]
-    public string CollectionTitle
-        => $"{CollectionIndex}. {Name}"; 
-
-    [JsonInclude]
-    public int CollectionIndex
+    public int FilePathHash()
     {
-        get => _collectionIndex;
-        set
-        {
-            _collectionIndex = value;
-            RaisePropertyChanged(nameof(CollectionTitle)); 
-        }
+        return FilePath.GetHashCode(); 
     }
 
     private string GetName()
     {
-        if (string.IsNullOrEmpty(FilePath)) return string.Empty; 
+        if (string.IsNullOrEmpty(FilePath)) return string.Empty;
 
         var fileInfo = new FileInfo(FilePath);
-        var fileName = fileInfo.Name;
-
-        if (fileName.EndsWith(".txt")) return fileName[..^4];
-        return fileName;
+        return fileInfo.Name;
     }
 
     public List<Chapter> GetChapters()
     {
         List<Chapter> result = [];
         if (File.Exists(FilePath) != true)
-            return result; 
+            return result;
 
-        var decoder = new TextDecoder(FilePath); 
+        var decoder = new TextDecoder(FilePath);
         var fileContent = decoder.GetFileContent();
         using var reader = new StringReader(fileContent);
 
         if (string.IsNullOrEmpty(fileContent))
-            return result; 
+            return result;
 
         Chapter currentChapter = new("前言", string.Empty);
         result.Add(currentChapter);
@@ -70,9 +56,13 @@ public partial class Book : BindableBase
         while (true)
         {
             line = reader.ReadLine();
-            if (line == null) break;
-            line.Trim();
-            if (string.IsNullOrEmpty(line)) continue;
+            if (line != null)
+                line = line.Trim();
+            else
+                break;
+
+            if (line.Length == 0)
+                continue;
 
             int upper = Math.Min(12, line.Length);
             if (IsTitle(line.AsSpan()[..upper]))
@@ -98,7 +88,7 @@ public partial class Book : BindableBase
         {
             return this.GetChapters();
         });
-        return result; 
+        return result;
     }
 
     private static bool IsTitle(ReadOnlySpan<char> input)
