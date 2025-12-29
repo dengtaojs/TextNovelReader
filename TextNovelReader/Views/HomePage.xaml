@@ -38,7 +38,7 @@
             VerticalOptions="End"
             Margin="20"
             Clicked="OpenFileButton_Clicked"
-            Background="LightPink">
+            Background="{StaticResource Primary}">
         </ImageButton>
     </Grid>
 </ContentPage>

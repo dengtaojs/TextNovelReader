@@ -1,4 +1,5 @@
-﻿using TextNovelReader.ViewModel;
+﻿using TextNovelReader.Models;
+using TextNovelReader.ViewModel;
 
 namespace TextNovelReader.Views;
 
@@ -15,9 +16,13 @@ public partial class BookContentsPage : ContentPage
 		this.LoadChaptersAsync(); 
 	}
 
-    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-
+		if (sender is Grid grid && grid.BindingContext is Chapter chapter)
+		{
+			_viewModel.CurrentChapter = chapter;
+			await Shell.Current.GoToAsync("chapter_detail"); 
+		}
     }
 
 	private async void LoadChaptersAsync()
