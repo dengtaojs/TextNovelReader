@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using TextNovelReader.Models;
+﻿using TextNovelReader.Models;
 using TextNovelReader.Service;
 using TextNovelReader.ViewModel;
 
@@ -8,7 +7,6 @@ namespace TextNovelReader.Views;
 public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
     private readonly ReaderViewModel _viewModel;
-    private readonly IEnumerable<Chapter>? _chaptersRepo;
 
     public BookContentsPage(ReaderViewModel viewModel)
     {
@@ -16,20 +14,15 @@ public partial class BookContentsPage : ContentPage, IBackButtonHandler
         InitializeComponent();
 
         this.Title = _viewModel.CurrentBook?.Name ?? "目录";
-        _chaptersRepo = _viewModel.CurrentBook?.GetChapters();
-
         LoadChapterAsync(); 
     }
 
     private async void LoadChapterAsync()
     {
-        //var result = await Task.Run(() => _chaptersRepo?.ToList());
-        //if (result == null)
-        //    return;
-        //this.ChaptersCollectionView.ItemsSource = result;
+        if (_viewModel.CurrentBook == null) return; 
 
-        await Task.Delay(50);
-        this.ChaptersCollectionView.ItemsSource = _chaptersRepo;
+        _viewModel.Chapters = await _viewModel.CurrentBook.GetChaptersAsync();
+        this.ChaptersCollectionView.ItemsSource = _viewModel.Chapters;
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

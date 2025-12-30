@@ -30,36 +30,44 @@ public partial class Book : BindableBase
         return fileInfo.Name;
     }
 
-    public IEnumerable<Chapter> GetChapters()
+    public List<Chapter> GetChapters()
     {
-        if (File.Exists(FilePath) != true)
-            yield break;
+        List<Chapter> result = [];
 
-        var decoder = new TextDecoder(FilePath);
-        var lines = decoder.GetFileContentList(); 
+        if (File.Exists(FilePath) != true)
+            return result;
+
+        var textFileReader = new TextFileReader(FilePath); 
 
         Chapter currentChapter = new("前言", string.Empty);
+        result.Add(currentChapter); 
+
         StringBuilder textBuilder = new();
 
-        foreach (var line in lines)
+        foreach(var line in textFileReader.GetLines())
         {
             int upper = Math.Min(12, line.Length);
             if (IsTitle(line.AsSpan()[..upper]))
             {
                 currentChapter.Text = textBuilder.ToString();
-                yield return currentChapter;
 
                 textBuilder = textBuilder.Clear();
                 currentChapter = new(line.Trim(), string.Empty);
+                result.Add(currentChapter); 
             }
             else
             {
                 textBuilder.AppendLine(line);
             }
         }
-        currentChapter.Text = textBuilder.ToString();
 
-        yield return currentChapter;
+        currentChapter.Text = textBuilder.ToString();
+        return result;
+    }
+
+    public async Task<List<Chapter>> GetChaptersAsync()
+    {
+        return await Task.Run(() => GetChapters());
     }
 
     private static bool IsTitle(ReadOnlySpan<char> input)

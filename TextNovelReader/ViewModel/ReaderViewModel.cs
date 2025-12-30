@@ -8,6 +8,7 @@ public class ReaderViewModel : BindableBase
 {
 
     public ObservableCollection<Book> Books { get;} = [];
+    public List<Chapter> Chapters { get; set; } = []; 
     public Book? CurrentBook { get; set; }
     public Chapter? CurrentChapter { get; set; }
 
