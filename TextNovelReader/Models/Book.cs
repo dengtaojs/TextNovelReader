@@ -30,41 +30,27 @@ public partial class Book : BindableBase
         return fileInfo.Name;
     }
 
-    public List<Chapter> GetChapters()
+    public IEnumerable<Chapter> GetChapters()
     {
-        List<Chapter> result = [];
         if (File.Exists(FilePath) != true)
-            return result;
+            yield break;
 
         var decoder = new TextDecoder(FilePath);
-        var fileContent = decoder.GetFileContent();
-        using var reader = new StringReader(fileContent);
-
-        if (string.IsNullOrEmpty(fileContent))
-            return result;
+        var lines = decoder.GetFileContentList(); 
 
         Chapter currentChapter = new("前言", string.Empty);
-        result.Add(currentChapter);
-
-        string? line = null;
         StringBuilder textBuilder = new();
-        while (true)
+
+        foreach (var line in lines)
         {
-            line = reader.ReadLine();
-            if (line == null)
-                break; 
-
-            if (line.Length == 0)
-                continue;
-
             int upper = Math.Min(12, line.Length);
             if (IsTitle(line.AsSpan()[..upper]))
             {
                 currentChapter.Text = textBuilder.ToString();
-                textBuilder = textBuilder.Clear();
+                yield return currentChapter;
 
+                textBuilder = textBuilder.Clear();
                 currentChapter = new(line.Trim(), string.Empty);
-                result.Add(currentChapter);
             }
             else
             {
@@ -73,16 +59,7 @@ public partial class Book : BindableBase
         }
         currentChapter.Text = textBuilder.ToString();
 
-        return result;
-    }
-
-    public async Task<List<Chapter>> GetChaptersAsync()
-    {
-        var result = await Task.Run(() =>
-        {
-            return this.GetChapters();
-        });
-        return result;
+        yield return currentChapter;
     }
 
     private static bool IsTitle(ReadOnlySpan<char> input)

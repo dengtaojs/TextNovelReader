@@ -1,19 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TextNovelReader.Views.ChapterDetailPage">
-    <Grid>
-        <ScrollView
-            HorizontalScrollBarVisibility="Default"
-            VerticalScrollBarVisibility="Default">
+             x:Class="TextNovelReader.Views.ChapterDetailPage"
+             BackgroundColor="LightGreen">
+
+    <Grid
+        RowSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <HorizontalStackLayout 
+            Spacing="10">
             <Label
-                x:Name="ChapterTextLabel"
-                FontSize="16"
-                MaxLines="0"
-                LineHeight="1.5"
-                LineBreakMode="WordWrap"
-            />
+                x:Name="ChapterTitleLabel"
+                FontSize="Small"
+                LineBreakMode="NoWrap"/>
+        </HorizontalStackLayout>
+        <ScrollView
+            x:Name="ReaderScrollView"
+            Grid.Row="1">
+            <Label
+                x:Name="ReaderTextLabel"
+                FontSize="18"
+                Padding="20"
+                LineHeight="1.6"
+                LineBreakMode="WordWrap"/>
         </ScrollView>
     </Grid>
-
 </ContentPage>

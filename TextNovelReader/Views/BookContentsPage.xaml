@@ -6,7 +6,11 @@
     <Grid>
         <CollectionView
             x:Name="ChaptersCollectionView"
-            SelectionMode="None">
+            ItemSizingStrategy="MeasureFirstItem"
+            ItemsUpdatingScrollMode="KeepScrollOffset"
+            SelectionMode="None"
+            RemainingItemsThreshold="5"
+            RemainingItemsThresholdReached="ChaptersCollectionView_RemainingItemsThresholdReached">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Chapter">
                     <Grid HeightRequest="40"
