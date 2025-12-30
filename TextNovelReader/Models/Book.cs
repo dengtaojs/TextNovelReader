@@ -51,10 +51,8 @@ public partial class Book : BindableBase
         while (true)
         {
             line = reader.ReadLine();
-            if (line != null)
-                line = line.Trim();
-            else
-                break;
+            if (line == null)
+                break; 
 
             if (line.Length == 0)
                 continue;
@@ -64,7 +62,8 @@ public partial class Book : BindableBase
             {
                 currentChapter.Text = textBuilder.ToString();
                 textBuilder = textBuilder.Clear();
-                currentChapter = new(line, string.Empty);
+
+                currentChapter = new(line.Trim(), string.Empty);
                 result.Add(currentChapter);
             }
             else

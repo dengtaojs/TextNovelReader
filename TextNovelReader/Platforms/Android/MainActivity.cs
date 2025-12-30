@@ -28,7 +28,7 @@ public class BackCallback : Java.Lang.Object, Android.Window.IOnBackInvokedCallb
     {
         if(Shell.Current?.CurrentPage is IBackButtonHandler handler)
         {
-            handler.OnBackButtonPressed(); 
+            handler.OnSystemBackButtonPressed(); 
         }
         else
         {

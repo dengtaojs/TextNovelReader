@@ -1,9 +1,10 @@
 ﻿using TextNovelReader.Models;
+using TextNovelReader.Service;
 using TextNovelReader.ViewModel;
 
 namespace TextNovelReader.Views;
 
-public partial class BookContentsPage : ContentPage
+public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
 	private readonly ReaderViewModel _viewModel; 
 	public BookContentsPage(ReaderViewModel viewModel)
@@ -37,4 +38,9 @@ public partial class BookContentsPage : ContentPage
 			_viewModel.Chapters.Add(chapter); 
 		}
 	}
+
+    public async void OnSystemBackButtonPressed()
+    {
+		await Shell.Current.GoToAsync("..");
+    }
 }

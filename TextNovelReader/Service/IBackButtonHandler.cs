@@ -2,5 +2,5 @@
 
 public interface IBackButtonHandler
 {
-    void OnBackButtonPressed();
+    void OnSystemBackButtonPressed();
 }

@@ -21,7 +21,7 @@ public partial class HomePage : ContentPage
         {
             _viewModel.IsContentsValid = book == _viewModel.CurrentBook;
             _viewModel.CurrentBook = book;
-            await Shell.Current.GoToAsync("book_contents"); 
+            await Shell.Current.GoToAsync("book_contents", false); 
         }
     }
 
@@ -44,6 +44,6 @@ public partial class HomePage : ContentPage
 
         _viewModel.IsContentsValid = false;
         _viewModel.CurrentBook = book;
-        await Shell.Current.GoToAsync("book_contents");
+        await Shell.Current.GoToAsync("book_contents", false);
     }
 }

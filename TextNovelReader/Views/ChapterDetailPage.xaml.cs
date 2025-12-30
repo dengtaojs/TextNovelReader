@@ -1,8 +1,9 @@
-﻿using TextNovelReader.ViewModel;
+﻿using TextNovelReader.Service;
+using TextNovelReader.ViewModel;
 
 namespace TextNovelReader.Views;
 
-public partial class ChapterDetailPage : ContentPage
+public partial class ChapterDetailPage : ContentPage, IBackButtonHandler
 {
     private readonly ReaderViewModel _viewModel;
     public ChapterDetailPage(ReaderViewModel viewModel)
@@ -15,6 +16,23 @@ public partial class ChapterDetailPage : ContentPage
             this.Title = _viewModel.CurrentChapter.Title;
             this.ChapterTextLabel.Text = _viewModel.CurrentChapter.Text; 
         }
+    }
+
+    public async void OnSystemBackButtonPressed()
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        Shell.SetTabBarIsVisible(this, false); 
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        Shell.SetTabBarIsVisible(this, true); 
     }
 
 
