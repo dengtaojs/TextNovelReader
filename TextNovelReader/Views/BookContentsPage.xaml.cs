@@ -9,8 +9,6 @@ public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
     private readonly ReaderViewModel _viewModel;
     private readonly IEnumerable<Chapter>? _chaptersRepo;
-    private readonly ObservableCollection<Chapter> _chapters = []; 
-
 
     public BookContentsPage(ReaderViewModel viewModel)
     {
@@ -18,7 +16,6 @@ public partial class BookContentsPage : ContentPage, IBackButtonHandler
         InitializeComponent();
 
         this.Title = _viewModel.CurrentBook?.Name ?? "目录";
-        this.ChaptersCollectionView.ItemsSource = _chapters;
         _chaptersRepo = _viewModel.CurrentBook?.GetChapters();
 
         LoadChapterAsync(); 
@@ -26,14 +23,13 @@ public partial class BookContentsPage : ContentPage, IBackButtonHandler
 
     private async void LoadChapterAsync()
     {
-        var result = await Task.Run(() => _chaptersRepo?.ToList());
-        if (result == null)
-            return;
-        _chapters.Clear(); 
-        foreach (var chapter in result)
-        {
-            _chapters.Add(chapter); 
-        }
+        //var result = await Task.Run(() => _chaptersRepo?.ToList());
+        //if (result == null)
+        //    return;
+        //this.ChaptersCollectionView.ItemsSource = result;
+
+        await Task.Delay(50);
+        this.ChaptersCollectionView.ItemsSource = _chaptersRepo;
     }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
