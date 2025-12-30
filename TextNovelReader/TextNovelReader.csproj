@@ -58,7 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Platforms\" />
 	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
