@@ -19,7 +19,6 @@ public partial class HomePage : ContentPage
     {
         if (sender is Grid grid && grid.BindingContext is Book book)
         {
-            _viewModel.IsContentsValid = book == _viewModel.CurrentBook;
             _viewModel.CurrentBook = book;
             await Shell.Current.GoToAsync("book_contents", false); 
         }
@@ -42,7 +41,6 @@ public partial class HomePage : ContentPage
             _viewModel.Books.Add(book);
         }
 
-        _viewModel.IsContentsValid = false;
         _viewModel.CurrentBook = book;
         await Shell.Current.GoToAsync("book_contents", false);
     }

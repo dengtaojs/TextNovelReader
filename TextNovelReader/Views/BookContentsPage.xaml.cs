@@ -7,70 +7,46 @@ namespace TextNovelReader.Views;
 
 public partial class BookContentsPage : ContentPage, IBackButtonHandler
 {
-	private readonly ReaderViewModel _viewModel;
-	private readonly IEnumerable<Chapter>? _chaptersRepo = null;
-	private bool _isLoading = false; 
-	int _pageIndex = 0;
-	const int PageSize = 50;
+    private readonly ReaderViewModel _viewModel;
+    private readonly IEnumerable<Chapter>? _chaptersRepo;
+    private readonly ObservableCollection<Chapter> _chapters = []; 
 
-	public BookContentsPage(ReaderViewModel viewModel)
-	{
-		_viewModel = viewModel;
-		InitializeComponent();
 
-		if (_viewModel.IsContentsValid == false)
-			_viewModel.Chapters.Clear(); 
+    public BookContentsPage(ReaderViewModel viewModel)
+    {
+        _viewModel = viewModel;
+        InitializeComponent();
 
-		this.Title = _viewModel.CurrentBook?.Name ?? "目录";
-		this.ChaptersCollectionView.ItemsSource = _viewModel.Chapters;
-		_chaptersRepo = _viewModel.CurrentBook?.GetChapters();
+        this.Title = _viewModel.CurrentBook?.Name ?? "目录";
+        this.ChaptersCollectionView.ItemsSource = _chapters;
+        _chaptersRepo = _viewModel.CurrentBook?.GetChapters();
 
-		LoadChaptersAsync(); 
-	}
+        LoadChapterAsync(); 
+    }
 
-	private async void LoadChaptersAsync()
-	{
-		await Task.Run(LoadPageChapters);
-	}
+    private async void LoadChapterAsync()
+    {
+        var result = await Task.Run(() => _chaptersRepo?.ToList());
+        if (result == null)
+            return;
+        _chapters.Clear(); 
+        foreach (var chapter in result)
+        {
+            _chapters.Add(chapter); 
+        }
+    }
 
     private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-		if (sender is Grid grid && grid.BindingContext is Chapter chapter)
-		{
-			_viewModel.CurrentChapter = chapter;
-			await Shell.Current.GoToAsync("chapter_detail"); 
-		}
+        if (sender is Grid grid && grid.BindingContext is Chapter chapter)
+        {
+            _viewModel.CurrentChapter = chapter;
+            await Shell.Current.GoToAsync("chapter_detail");
+        }
     }
-
-	private void LoadPageChapters()
-	{
-		if (_chaptersRepo == null)
-			return;
-
-		if (_isLoading)
-			return;
-
-		_isLoading = true;
-
-		var start = _pageIndex * PageSize;
-		var end = Math.Min(start + PageSize, _viewModel.Chapters.Count);
-		foreach (var chapter in _chaptersRepo)
-		{
-			_viewModel.Chapters.Add(chapter);
-			if (++start == end)
-				break; 
-		}
-		_pageIndex++;
-		_isLoading = false;
-	}
 
     public async void OnSystemBackButtonPressed()
     {
-		await Shell.Current.GoToAsync("..");
-    }
-
-    private void ChaptersCollectionView_RemainingItemsThresholdReached(object sender, EventArgs e)
-    {
-		LoadPageChapters(); 
+        await Shell.Current.GoToAsync("..");
     }
 }

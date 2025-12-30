@@ -8,22 +8,22 @@
             x:Name="ChaptersCollectionView"
             ItemSizingStrategy="MeasureFirstItem"
             ItemsUpdatingScrollMode="KeepScrollOffset"
-            SelectionMode="None"
-            RemainingItemsThreshold="5"
-            RemainingItemsThresholdReached="ChaptersCollectionView_RemainingItemsThresholdReached">
+            SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Chapter">
-                    <Grid HeightRequest="40"
-                          Padding="0 10">
+                    <Grid
+                        Padding="10">
                         <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                         </Grid.GestureRecognizers>
                         <Label
                             Text="{Binding Title}"
                             FontSize="Subtitle" 
                             VerticalTextAlignment="Center"
-                            LineBreakMode="NoWrap" />
+                            LineBreakMode="NoWrap">
+                        </Label>
                     </Grid>
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
